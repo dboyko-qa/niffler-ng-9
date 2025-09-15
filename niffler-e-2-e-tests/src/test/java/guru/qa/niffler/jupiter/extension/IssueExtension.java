@@ -10,6 +10,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import org.junit.platform.commons.support.SearchOption;
 
 import java.io.IOException;
+import java.util.Optional;
 
 
 public class IssueExtension implements ExecutionCondition {
@@ -19,27 +20,27 @@ public class IssueExtension implements ExecutionCondition {
   @SneakyThrows
   @Override
   public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {
-    return AnnotationSupport.findAnnotation(
-        context.getRequiredTestMethod(),
-        DisabledByIssue.class
-    ).or(
-        () -> AnnotationSupport.findAnnotation(
-            context.getRequiredTestClass(),
-            DisabledByIssue.class,
-            SearchOption.INCLUDE_ENCLOSING_CLASSES
-        )
-    ).map(
-        byIssue -> {
-          try {
-            return "open".equals(ghApiClient.issueState(byIssue.value()))
-                ? ConditionEvaluationResult.disabled("Disabled by issue #" + byIssue.value())
-                : ConditionEvaluationResult.enabled("Issue closed");
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
-        }
-    ).orElseGet(
-        () -> ConditionEvaluationResult.enabled("Annotation @DisabledByIssue not found")
-    );
+      Optional<DisabledByIssue> annotation;
+
+      annotation = AnnotationSupport.findAnnotation(
+              context.getRequiredTestClass(),
+              DisabledByIssue.class,
+              SearchOption.INCLUDE_ENCLOSING_CLASSES
+      );
+
+      if (context.getTestMethod().isPresent() && annotation.isEmpty()) {
+          annotation = AnnotationSupport.findAnnotation(
+                  context.getRequiredTestMethod(),
+                  DisabledByIssue.class
+          );
+      }
+
+      return annotation.map(
+              byIssue -> "open".equals(ghApiClient.issueState(byIssue.value()))
+                      ? ConditionEvaluationResult.disabled("Disabled by issue #" + byIssue.value())
+                      : ConditionEvaluationResult.enabled("Issue closed")
+      ).orElseGet(
+              () -> ConditionEvaluationResult.enabled("Annotation @DisabledByIssue not found")
+      );
   }
 }

@@ -3,18 +3,26 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class AuthUserDaoJdbc implements AuthUserDao {
     private static final Config CFG = Config.getInstance();
+    private static final String URL = CFG.authJdbcUrl();
 
+
+    @Nonnull
+    @SuppressWarnings("resource")
     @Override
     public AuthUserEntity create(AuthUserEntity user) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -48,6 +56,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
     }
 
+    @Nonnull
+    @SuppressWarnings("resource")
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement("SELECT * FROM \"user\" WHERE id = ?")) {
@@ -65,7 +75,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
                     result.setAccountNonExpired(rs.getBoolean("account_non_expired"));
                     result.setAccountNonLocked(rs.getBoolean("account_non_locked"));
                     result.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
-                    return Optional.of(result);
+                    return Optional.ofNullable(result);
                 } else {
                     return Optional.empty();
                 }
@@ -87,6 +97,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
         return result;
     }
 
+    @Nonnull
+    @SuppressWarnings("resource")
     @Override
     public List<AuthUserEntity> findAll() {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -99,6 +111,30 @@ public class AuthUserDaoJdbc implements AuthUserDao {
                     resultList.add(ce);
                 }
                 return resultList;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Nonnull
+    @SuppressWarnings("resource")
+    @Override
+    public Optional<AuthUserEntity> findByUsername(String username) {
+        try (PreparedStatement ps = holder(URL).connection().prepareStatement("SELECT * FROM \"user\" WHERE username = ?")) {
+            ps.setString(1, username);
+
+            ps.execute();
+
+            try (ResultSet rs = ps.getResultSet()) {
+
+                if (rs.next()) {
+                    return Optional.ofNullable(
+                            AuthUserEntityRowMapper.instance.mapRow(rs, rs.getRow())
+                    );
+                } else {
+                    return Optional.empty();
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

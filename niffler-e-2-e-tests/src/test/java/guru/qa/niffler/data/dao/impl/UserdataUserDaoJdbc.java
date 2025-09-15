@@ -8,18 +8,23 @@ import guru.qa.niffler.data.mapper.UserdataUserEntityRowMapper;
 import guru.qa.niffler.model.CurrencyValues;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class UserdataUserDaoJdbc implements UserdataUserDao {
     private static final Config CFG = Config.getInstance();
     private static final String URL = CFG.userdataJdbcUrl();
 
+    @Nonnull
+    @SuppressWarnings("resource")
     @Override
     public UserEntity create(UserEntity user) {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
@@ -52,6 +57,8 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
         }
     }
 
+    @Nonnull
+    @SuppressWarnings("resource")
     @Override
     public UserEntity update(UserEntity user) {
         try (PreparedStatement usersPs = holder(URL).connection().prepareStatement(
@@ -96,6 +103,8 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
         return user;
     }
 
+    @Nonnull
+    @SuppressWarnings("resource")
     @Override
     public Optional<UserEntity> findById(UUID id) {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
@@ -125,6 +134,8 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
         }
     }
 
+    @Nonnull
+    @SuppressWarnings("resource")
     @Override
     public Optional<UserEntity> findByUsername(String username) {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
@@ -154,6 +165,8 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
         }
     }
 
+    @Nonnull
+    @SuppressWarnings("resource")
     @Override
     public List<UserEntity> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();

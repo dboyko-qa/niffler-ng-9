@@ -4,21 +4,25 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
-import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.jdbc.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class CategoryDaoSpringJdbc implements CategoryDao {
 
     private static final Config CFG = Config.getInstance();
 
+    @Nonnull
     @Override
     public CategoryEntity create(CategoryEntity category) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
@@ -41,6 +45,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     }
 
+    @Nonnull
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
 
@@ -53,6 +58,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
                 ));
     }
 
+    @Nonnull
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
 
@@ -74,6 +80,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
         return ce;
     }
 
+    @Nonnull
     @Override
     public List<CategoryEntity> findAllByUsername(String username) {
 
@@ -95,6 +102,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
         );
     }
 
+    @Nonnull
     @Override
     public List<CategoryEntity> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
