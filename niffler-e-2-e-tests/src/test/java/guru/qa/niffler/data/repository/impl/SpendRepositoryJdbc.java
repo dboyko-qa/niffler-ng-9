@@ -1,27 +1,26 @@
 package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
 import guru.qa.niffler.data.repository.SpendRepository;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.SpendJson;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.*;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.jpa.EntityManagers.em;
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class SpendRepositoryJdbc implements SpendRepository {
     private static final Config CFG = Config.getInstance();
     private static final String URL = CFG.spendJdbcUrl();
 
+    @Nonnull
     @Override
     public SpendEntity create(SpendEntity spend) {
         try (PreparedStatement spendPs = holder(URL).connection().prepareStatement(
@@ -84,6 +83,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
 
     }
 
+    @Nonnull
     @Override
     public SpendEntity update(SpendEntity spend) {
         try (PreparedStatement spendPs = holder(URL).connection().prepareStatement(
@@ -113,6 +113,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
         }
     }
 
+    @Nonnull
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
         try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
@@ -141,6 +142,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
         }
     }
 
+    @Nonnull
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
         try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
@@ -161,6 +163,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
         }
     }
 
+    @Nonnull
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
             try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
@@ -231,6 +234,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
 
     }
 
+    @Nonnull
     @Override
     public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
         try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(

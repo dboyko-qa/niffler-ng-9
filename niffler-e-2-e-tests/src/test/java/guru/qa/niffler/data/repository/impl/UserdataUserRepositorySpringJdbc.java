@@ -7,11 +7,13 @@ import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.mapper.UserdataUserEntityRowMapper;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
-import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.jdbc.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Date;
@@ -19,10 +21,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 
+@ParametersAreNonnullByDefault
 public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository {
     private static final Config CFG = Config.getInstance();
     private static final String URL = CFG.userdataJdbcUrl();
     private final UserdataUserDao udUserDao = new UserdataUserDaoSpringJdbc();
+    @Nonnull
     @Override
     public UserEntity create(UserEntity user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
@@ -48,6 +52,7 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
         return user;
     }
 
+    @Nonnull
     @Override
     public Optional<UserEntity> findById(UUID id) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
@@ -60,6 +65,7 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
         );
     }
 
+    @Nonnull
     @Override
     public Optional<UserEntity> findByUsername(String username) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));
@@ -72,6 +78,7 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
         );
     }
 
+    @Nonnull
     @Override
     public UserEntity update(UserEntity user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(URL));

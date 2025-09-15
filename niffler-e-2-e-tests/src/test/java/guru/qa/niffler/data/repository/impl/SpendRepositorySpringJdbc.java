@@ -6,20 +6,24 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
 import guru.qa.niffler.data.mapper.SpendEntityRowMapper;
 import guru.qa.niffler.data.repository.SpendRepository;
-import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.jdbc.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class SpendRepositorySpringJdbc implements SpendRepository {
     private static final Config CFG = Config.getInstance();
     private static final String URL = CFG.spendJdbcUrl();
 
+    @Nonnull
     @Override
     public SpendEntity create(SpendEntity spend) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
@@ -71,6 +75,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
 
     }
 
+    @Nonnull
     @Override
     public SpendEntity update(SpendEntity spend) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
@@ -105,6 +110,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
         return spend;
     }
 
+    @Nonnull
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
@@ -130,6 +136,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
         return category;
     }
 
+    @Nonnull
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
@@ -143,6 +150,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
         );
     }
 
+    @Nonnull
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
@@ -163,6 +171,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
 
     }
 
+    @Nonnull
     @Override
     public Optional<SpendEntity> findById(UUID id) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
@@ -189,6 +198,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
 
     }
 
+    @Nonnull
     @Override
     public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));

@@ -5,21 +5,27 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.config.Config;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.$x;
 
+@ParametersAreNonnullByDefault
 public class PeoplePage {
     private final ElementsCollection allPeopleList = $$("#all tr");
     private final SelenideElement allTable = $x("//a[@href='/people/all']");
     private final SearchComponent searchComponent = new SearchComponent();
 
+    @Nonnull
     public PeoplePage openPage() {
         Selenide.open(Config.getInstance().frontUrl() + "people/all");
         allTable.shouldBe(visible);
         return this;
     }
 
+    @Nonnull
     public PeoplePage checkUserInWaitingStatus(String outcomeInviteUser) {
         searchComponent.searchUser(outcomeInviteUser);
         SelenideElement outcomeLine = allPeopleList.find(text(outcomeInviteUser));
@@ -27,6 +33,7 @@ public class PeoplePage {
         return this;
     }
 
+    @Nonnull
     public PeoplePage checkNoOutcomeInvites() {
         allPeopleList.find(text("Waiting...")).shouldNot(exist);
         return this;
