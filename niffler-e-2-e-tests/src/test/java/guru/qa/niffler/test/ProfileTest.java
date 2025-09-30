@@ -5,6 +5,7 @@ import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 public class ProfileTest {
     ProfilePage profilePage = new ProfilePage();
     LoginPage loginPage = new LoginPage();
+
     private static final Config CFG = Config.getInstance();
 
     @User(
@@ -47,5 +49,24 @@ public class ProfileTest {
         profilePage.openPage()
                 .verifyOpened()
                 .checkCategoryShown(category.name());
+    }
+
+
+    @User()
+    @Test
+    void editProfile(UserJson user) {
+        String newUsername = "my name";
+        loginPage.openPage()
+                .fillLoginPage(user.username(), "12345")
+                .submit();
+        profilePage.openPage()
+                .verifyOpened()
+                .uploadAvatar("img/cat.jpeg")
+                .setName(newUsername)
+                .saveChanges()
+                .header.toMainPage();
+        profilePage.openPage()
+                .verifyName(newUsername);
+
     }
 }

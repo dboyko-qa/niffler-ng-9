@@ -1,4 +1,4 @@
-package guru.qa.niffler.page;
+package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.SelenideElement;
 
@@ -9,14 +9,20 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class SearchComponent {
+public class SearchField {
     private final SelenideElement search = $("input[placeholder='Search']");
 
     @Nonnull
-    public SearchComponent searchUser(String username) {
-        search.shouldBe(visible).clear();
-        search.sendKeys(username);
+    public SearchField search(String input) {
+        clearIfNotEmpty();
+        search.shouldBe(visible).sendKeys(input);
         search.pressEnter();
+        return this;
+    }
+
+    @Nonnull
+    public SearchField clearIfNotEmpty () {
+        if (!search.getValue().isBlank()) search.shouldBe(visible).clear();
         return this;
     }
 }

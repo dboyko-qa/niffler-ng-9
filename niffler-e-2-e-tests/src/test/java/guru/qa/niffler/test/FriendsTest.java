@@ -35,7 +35,7 @@ public class FriendsTest {
 
     @Test
     @User()
-    void friendsTableShouldBeEmptyForNewUser(UserJson user){
+    void friendsTableShouldBeEmptyForNewUser(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .successLogin(user.username(), "12345")
                 .checkThatPageLoaded()
@@ -69,6 +69,36 @@ public class FriendsTest {
                 .submit();
         peoplePage.openPage()
                 .checkUserInWaitingStatus(outcome.username());
+    }
+
+    @Test
+    @User(
+            incomeInvitations = 1
+    )
+    void incomeInvitationAccept(UserJson user) {
+        final UserJson income = user.testData().incomeInvitations().getFirst();
+        loginPage.openPage()
+                .fillLoginPage(user.username(), "12345")
+                .submit()
+                .friendsPage()
+                .acceptInvitations(income.username())
+                .checkFriendshipAccepted(income.username());
+    }
+
+    @Test
+    @User(
+            incomeInvitations = 1
+    )
+    void incomeInvitationDecline(UserJson user) {
+        final UserJson income = user.testData().incomeInvitations().getFirst();
+        loginPage.openPage()
+                .fillLoginPage(user.username(), "12345")
+                .submit()
+                .friendsPage()
+                .declineInvitations(income.username())
+                .checkNoFriendWithUsername(income.username());
+
+
     }
 
 }
